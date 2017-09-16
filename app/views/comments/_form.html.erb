@@ -1,0 +1,5 @@
+<%= form_for @comment,:url=>post_comments_path,method: :post ,remote: :true,authenticity_token: true do|comment|%>
+	<%=comment.text_area :comment, placeholder: "Please enter a comment"%>
+	<%=comment.submit "Submit"%>
+<%end%>
+

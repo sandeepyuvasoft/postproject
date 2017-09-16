@@ -1,0 +1,4 @@
+<%= form_for @reply,:url=>post_comment_replies_path,method: :post ,remote: :true,authenticity_token: true do|reply|%>
+	<%=reply.text_area :reply, placeholder: "Please enter a reply"%>
+	<%=reply.submit "Submit"%>
+<%end%>

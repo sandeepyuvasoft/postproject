@@ -1,0 +1,70 @@
+<% @posts.each do |post| %>
+<div class="container">
+  <div class="row">
+    <div class="[ col-xs-12 col-sm-offset-1 col-sm-5 ]">
+      <div class="[ panel panel-default ] panel-google-plus">
+        <div class="panel-heading">
+          <%user=post.user_id%>
+          <%c_user=User.find_by(id:user)%>
+          <%=image_tag c_user.image.present? ? c_user.image.url(:thumb).to_s: '/assets/default.png', :class=> "img-circular img-circle" %>
+          <strong><%=c_user.firstname%></strong>
+          <%time= Time.new  %>
+          <h5><span>Shared publicly</span> - <span><%=time.strftime("%H:%M:%S")%></span> </h5>
+              </div>
+          <div class="panel-body">
+          <p><%=post.post%></p>
+        </div>
+          <div class="panel-body">
+            <p><%= image_tag(post.pic.url.to_s, height: '120', width: '400', alt: "rss feed") %></p>
+          </div>
+          <div class="panel-footer">
+            <%if post.likes.where(user_id: current_user.id).present?%>
+              <%=link_to "Unlike",post_like_path(post_id: post.id,id: post.likes),method: :delete ,remote: true %>
+            <%else%>
+              <%=link_to "Like", post_likes_path(post),method: :post ,remote: true %>
+            <%end%>
+            <%=post.likes.count%>
+            <%if  current_user.id == post.user_id%>
+              <button class="delete-btn" id="delete_<%= post.id%>">Delete</button>
+            <%end%>
+            <div id="comment-form_<%=post.id%>">
+              <%= link_to "Comment" , new_post_comment_path(post), remote: true %>
+            </div>
+          </div>
+         
+          <%@comments=post.comments%>
+          <%@comments.each do|comment|%>
+          <%=image_tag comment.user.image.present? ? comment.user.image.url(:thumb).to_s: '/assets/default.png', :class=> "img-circular img-circle" %>
+
+          <span>
+          <span style="color:blue"><%=comment.user.firstname%></span>
+          <%=comment.comment%>
+
+          <%=link_to "Like" %>
+          <%= link_to "Reply" , new_post_comment_reply_path(post,comment), remote: true %>
+          </span>
+          <div id="reply-form_<%=comment.id%>"></div>
+            <%@replies=comment.replies%>
+            <%@replies.each do|reply|%>
+              <%=reply.reply%><br>
+            <%end%>
+          <%end%>
+        </div>
+      </div>
+    </div>
+</div>
+<%end%>
+<script type="text/javascript">
+    $(".delete-btn").click(function(){
+        var post_id= this.id.split("_")[1];
+        $("#post_"+post_id).hide();
+        $.ajax({
+      type: "DELETE",
+      url: "/posts/"+post_id,
+      data: { post_id:post_id},
+      success : function(data) {
+        alert("Post deleted successfully");
+      }
+    })
+    })
+</script>

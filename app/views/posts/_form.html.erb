@@ -1,0 +1,7 @@
+<%= form_for @post, remote: :true,authenticity_token: true do|post|%>
+	<%=post.label :post%>
+	<%=post.text_area :post%><br \><br \>
+	<%=post.label :pic%>
+	<%=post.file_field :pic%><br \><br \>
+	<%=post.submit "Save"%>
+<%end%>
